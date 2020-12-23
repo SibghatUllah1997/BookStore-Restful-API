@@ -1,0 +1,45 @@
+const Router = require('express').Router();
+const {Book , validate  } = require('../model/book');
+const bodyparser = require('body-parser');
+
+exports.getAllProducts= async(req,res)=>{
+    const book = await Book.find().sort('name');
+    res.send(book)
+    };
+
+exports.postProduct = async (req, res)=>{
+    // const { error } =  validate(req.body);
+    // if(error) res.status(400).send('kind input a validate course')
+
+    let book = new Book({name : req.body.name});
+    if(!book) res.status(400).send('enter a valid id of book');
+
+    book = await book.save();
+ 
+    console.log('the course is entered successfully');
+
+    res.send(book)
+}
+
+exports.updateBook =  async (req , res)=>{
+    var book = await Book.findByIdAndUpdate(req.params.id, {name : req.body.name}, {new : true });
+    if(!book) return res.status(400).send('enter a valid id of book');
+    res.send(book);  
+    res.send('Book is updated Successfully') 
+ }
+
+ exports.deleteBook = async (req, res)=>{
+
+    var book = await Book.findByIdAndRemove(req.params.id)
+    if(!book) return res.status(401).send('enter a valid id');
+
+    res.send(book);
+ }
+
+ exports.getById = async (req, res)=>{
+
+    var book = await Book.findById(req.params.id)
+     if(!book) return res.status(400).send('the book with given Id is not found');
+     res.send(book);
+ }
+ 
